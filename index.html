@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#090909" />
+  <title>HL Store — Moda masculina premium</title>
+  <meta name="description" content="HL Store: moda masculina casual, social e premium. Conheça os mais vendidos e consulte pelo WhatsApp." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+  <a class="skip-link" href="#catalogo">Ir para o catálogo</a>
+
+  <header class="hero" id="topo">
+    <div class="hero__bg" aria-hidden="true">
+      <img src="assets/images/hero.svg" alt="" width="800" height="1200" fetchpriority="high" />
+    </div>
+    <div class="hero__content">
+      <h1 class="logo" aria-label="HL Store">
+        <!-- LOGO DO HERO: edite aqui as letras (HL) e o nome (STORE). Para usar uma imagem pronta, veja o README. -->
+        <svg class="logo-svg logo-svg--hero" viewBox="0 0 360 400" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="silver-hero" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f4f5f6"/>
+              <stop offset=".55" stop-color="#bfc3c7"/>
+              <stop offset="1" stop-color="#a4a9ae"/>
+            </linearGradient>
+          </defs>
+          <circle class="logo-svg__ring" cx="180" cy="150" r="118" pathLength="1" fill="none" stroke="url(#silver-hero)" stroke-width="1.6"/>
+          <text class="logo-svg__mark" x="180" y="202" text-anchor="middle" font-size="140" letter-spacing="-10" fill="url(#silver-hero)"><tspan class="logo-svg__letter" style="--i:0">H</tspan><tspan class="logo-svg__letter" style="--i:1">L</tspan></text>
+          <text class="logo-svg__name" x="189" y="338" text-anchor="middle" font-size="38" letter-spacing="18" fill="#f5f5f5">STORE</text>
+        </svg>
+      </h1>
+      <p class="hero__tagline reveal" style="--d:600ms">Elegância em cada detalhe.</p>
+      <p class="hero__text reveal" style="--d:750ms">Peças masculinas com qualidade, caimento e personalidade para quem não abre mão de estilo.</p>
+      <a class="btn btn--primary reveal" style="--d:900ms" href="#catalogo">EXPLORAR COLEÇÃO</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="catalog" id="catalogo" aria-labelledby="catalogo-titulo">
+      <div class="container catalog__head">
+        <h2 class="section-title reveal" id="catalogo-titulo">OS MAIS VENDIDOS</h2>
+        <p class="section-sub reveal" style="--d:100ms">Peças selecionadas para elevar seu estilo</p>
+        <p class="demo-note reveal" style="--d:200ms">Produtos e preços de demonstração.</p>
+      </div>
+
+      <div class="products" id="products-main"></div>
+      <div class="products products--extra" id="products-extra" hidden></div>
+
+      <div class="container more">
+        <button class="btn btn--ghost" id="toggle-more" type="button" aria-expanded="false" aria-controls="products-extra">VER MAIS PEÇAS</button>
+      </div>
+    </section>
+
+    <section class="contact" id="contato" aria-labelledby="contato-titulo">
+      <div class="container contact__inner">
+        <h2 class="section-title reveal" id="contato-titulo">ENCONTRE A PEÇA CERTA PARA VOCÊ.</h2>
+        <p class="section-sub reveal" style="--d:100ms">Consulte tamanhos, disponibilidade e outras informações diretamente com nossa equipe.</p>
+        <a class="btn btn--primary reveal" style="--d:200ms" id="contact-wa" href="#" target="_blank" rel="noopener noreferrer">FALAR NO WHATSAPP</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="logo logo--small" aria-label="HL Store">
+        <svg class="logo-svg logo-svg--footer" viewBox="0 0 360 400" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="silver-foot" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f4f5f6"/>
+              <stop offset=".55" stop-color="#bfc3c7"/>
+              <stop offset="1" stop-color="#a4a9ae"/>
+            </linearGradient>
+          </defs>
+          <circle cx="180" cy="150" r="118" fill="none" stroke="url(#silver-foot)" stroke-width="2.4"/>
+          <text class="logo-svg__mark" x="180" y="202" text-anchor="middle" font-size="140" letter-spacing="-10" fill="url(#silver-foot)">HL</text>
+          <text class="logo-svg__name" x="189" y="338" text-anchor="middle" font-size="38" letter-spacing="18" fill="#f5f5f5">STORE</text>
+        </svg>
+      </div>
+      <p class="footer__name" id="footer-name">HL Store</p>
+      <p class="footer__phrase">Seu estilo, sua identidade.</p>
+      <nav class="footer__links" aria-label="Redes e contato">
+        <a id="footer-ig" href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a id="footer-wa" href="#" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </nav>
+      <p class="footer__copy">© <span id="year"></span> HL Store. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

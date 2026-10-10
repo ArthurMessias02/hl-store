@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<title>HL Store</title>
+<rect width="512" height="512" rx="96" fill="#090909"/>
+<g fill="none" stroke="#BFC3C7" stroke-linecap="round">
+<circle cx="256" cy="256" r="176" stroke-width="11"/>
+<line x1="176" y1="180" x2="176" y2="332" stroke-width="15"/><line x1="238" y1="180" x2="238" y2="332" stroke-width="15"/><line x1="176" y1="256" x2="238" y2="256" stroke-width="8"/><line x1="163" y1="180" x2="189" y2="180" stroke-width="7"/><line x1="163" y1="332" x2="189" y2="332" stroke-width="7"/><line x1="225" y1="180" x2="251" y2="180" stroke-width="7"/><line x1="225" y1="332" x2="251" y2="332" stroke-width="7"/><line x1="282" y1="180" x2="282" y2="332" stroke-width="15"/><line x1="269" y1="180" x2="295" y2="180" stroke-width="7"/><line x1="282" y1="332" x2="338" y2="332" stroke-width="8"/><line x1="338" y1="310" x2="338" y2="332" stroke-width="7"/>
+</g>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Imagem de demonstração: BLAZER">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1C1C1C"/><stop offset="1" stop-color="#090909"/></linearGradient></defs>
+<rect width="800" height="1000" fill="url(#g)"/>
+<rect x="40" y="40" width="720" height="920" fill="none" stroke="#BFC3C7" stroke-opacity=".18"/>
+<text x="400" y="470" text-anchor="middle" font-family="Georgia,serif" font-size="150" fill="#BFC3C7" fill-opacity=".85" letter-spacing="10">HL</text>
+<text x="400" y="560" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" fill="#F5F5F5" letter-spacing="8">BLAZER</text>
+<text x="400" y="920" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="#888888" letter-spacing="4">IMAGEM DE DEMONSTRAÇÃO · 05</text>
+</svg>

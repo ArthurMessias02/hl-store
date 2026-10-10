@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Fundo de demonstração do hero">
+<defs><radialGradient id="r" cx=".7" cy=".3" r=".9"><stop offset="0" stop-color="#2a2a2a"/><stop offset=".6" stop-color="#121212"/><stop offset="1" stop-color="#090909"/></radialGradient></defs>
+<rect width="800" height="1200" fill="url(#r)"/>
+<g fill="none" stroke="#BFC3C7" stroke-opacity=".08"><path d="M0 900 L800 500"/><path d="M0 1100 L800 700"/><path d="M-100 700 L800 300"/></g>
+</svg>
