@@ -7,10 +7,10 @@
 window.HL_CONFIG = {
   // DEMO: número fictício. Formato: 55 + DDD + número, só dígitos.
   // Exemplo de formato: "5511999999999"
-  whatsappNumber: "5500000000000",
+  whatsappNumber: "5515988250486",
 
   // DEMO: substitua pelo perfil real da loja.
-  instagramUrl: "https://www.instagram.com/",
+  instagramUrl: "https://www.instagram.com/userhlstore/",
 
   // O texto sob as letras HL ("STORE" ou "STORIES") agora fica dentro do SVG
   // da logo no index.html (procure por class="logo-svg__name").

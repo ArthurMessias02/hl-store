@@ -28,14 +28,6 @@ python3 -m http.server 8000
 
 Teste no celular usando o modo responsivo do navegador (larguras de 360 a 430 px).
 
-## Publicar no Vercel
-
-1. Crie uma conta em vercel.com e envie a pasta `hl-store` para um repositório no GitHub.
-2. No Vercel, clique em **Add New → Project**, importe o repositório.
-3. Em *Framework Preset* deixe **Other**; não é preciso comando de build nem pasta de saída.
-4. Clique em **Deploy**. O Vercel gera um endereço `*.vercel.app` sem exigir domínio próprio.
-
-Alternativa: instalar a CLI (`npm i -g vercel`) e rodar `vercel` dentro da pasta. Os recursos e limites disponíveis dependem do plano da sua conta; consulte a documentação do Vercel.
 
 ## Como editar
 
