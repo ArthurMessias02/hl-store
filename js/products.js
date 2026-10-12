@@ -1,9 +1,7 @@
 /**
  * PRODUTOS (DADOS DE DEMONSTRAÇÃO)
  * ------------------------------------------------------------
- * Nomes, descrições, preços e tamanhos abaixo são FICTÍCIOS.
- * Substitua pelos dados reais da HL Store.
- *
+
  * Campos:
  *  id        identificador único
  *  name      nome da peça
@@ -22,6 +20,11 @@ window.HL_PRODUCTS = [
     price: 89.99,
     sizes: ["P", "M", "G","GG"],
     image: "assets/images/produto-01.webp",
+    images: [
+      "assets/images/produto-01.webp",
+      "assets/images/produto-01-02.webp",
+      "assets/images/produto-01-03.webp",
+    ],
     inStock: true,
     featured: true,
   },
@@ -32,6 +35,11 @@ window.HL_PRODUCTS = [
     price: 105.99,
     sizes: ["P", "M", "G","GG"],
     image: "assets/images/produto-02.webp",
+    images: [
+      "assets/images/produto-02.webp",
+      "assets/images/produto-02-02.webp",
+      "assets/images/produto-02-03.webp",
+    ],
     inStock: true,
     featured: false,
   },
@@ -42,6 +50,13 @@ window.HL_PRODUCTS = [
     price: 79.99,
     sizes: ["P", "M", "G", "GG"],
     image: "assets/images/produto-03.webp",
+    images: [
+      "assets/images/produto-03.webp",
+      "assets/images/produto-03-02.webp",
+      "assets/images/produto-03-03.webp",
+      "assets/images/produto-03-04.webp",
+      "assets/images/produto-03-05.webp",
+    ],
     inStock: true,
     featured: true,
   },

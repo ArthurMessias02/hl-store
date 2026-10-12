@@ -1,4 +1,4 @@
-/* HL Store — lógica da página: renderização, WhatsApp, "ver mais" e animações */
+/* HL Store — lógica da página: renderização, galeria de fotos, WhatsApp, "ver mais" e animações */
 (function () {
   "use strict";
 
@@ -19,7 +19,7 @@
     return "Olá! Vi que a " + p.name + " da " + CONFIG.brandName + " está indisponível no site. Gostaria de consultar se haverá reposição ou alternativas.";
   }
 
-  /* ---------- Criação dos cards ---------- */
+  /* ---------- Utilitários ---------- */
   function el(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -27,25 +27,117 @@
     return node;
   }
 
+  function esc(value) {
+    return String(value).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  /* ---------- Galeria de fotos do produto ---------- */
+  function getPhotos(p) {
+    return p.images && p.images.length ? p.images : [p.image];
+  }
+
+  function photoAlt(p, n, total) {
+    return total > 1 ? p.name + " — foto " + (n + 1) + " de " + total : p.name;
+  }
+
+  /* HTML do bloco de mídia (foto grande + setas + miniaturas) */
+  function galleryHTML(p, index) {
+    const fotos = getPhotos(p);
+    const multi = fotos.length > 1;
+    const loading = index < 2 ? "eager" : "lazy";
+
+    return `
+      <div class="product__gallery" data-gallery data-id="${esc(p.id)}">
+        <div class="product__media">
+          ${p.featured ? '<span class="product__badge">DESTAQUE</span>' : ""}
+          <img class="gallery__img" src="${esc(fotos[0])}" alt="${esc(photoAlt(p, 0, fotos.length))}" width="800" height="1000" loading="${loading}" decoding="async" draggable="false">
+          ${multi ? `
+            <button class="gallery__arrow gallery__arrow--prev" type="button" aria-label="Foto anterior">‹</button>
+            <button class="gallery__arrow gallery__arrow--next" type="button" aria-label="Próxima foto">›</button>` : ""}
+        </div>
+        ${multi ? `
+          <div class="gallery__thumbs">
+            ${fotos.map(function (src, i) {
+              return `
+              <button class="gallery__thumb ${i === 0 ? "is-active" : ""}" type="button" data-i="${i}" aria-label="Ver foto ${i + 1}">
+                <img src="${esc(src)}" alt="" loading="lazy" draggable="false">
+              </button>`;
+            }).join("")}
+          </div>` : ""}
+      </div>`;
+  }
+
+  /* Liga o comportamento: setas, miniaturas e swipe */
+  function initGalleries(root) {
+    root.querySelectorAll("[data-gallery]").forEach(function (g) {
+      const p = PRODUCTS.find(function (x) { return String(x.id) === g.dataset.id; });
+      if (!p) return;
+
+      const fotos = getPhotos(p);
+      if (fotos.length < 2) return;
+
+      const stage = g.querySelector(".product__media");
+      const img = g.querySelector(".gallery__img");
+      const prev = g.querySelector(".gallery__arrow--prev");
+      const next = g.querySelector(".gallery__arrow--next");
+      const thumbs = Array.prototype.slice.call(g.querySelectorAll(".gallery__thumb"));
+      if (!stage || !img) return;
+
+      let atual = 0;
+
+      function ir(n) {
+        atual = (n + fotos.length) % fotos.length;
+        img.classList.add("is-changing");
+        img.onload = img.onerror = function () { img.classList.remove("is-changing"); };
+        img.src = fotos[atual];
+        img.alt = photoAlt(p, atual, fotos.length);
+        thumbs.forEach(function (t, k) { t.classList.toggle("is-active", k === atual); });
+      }
+
+      if (prev) prev.addEventListener("click", function () { ir(atual - 1); });
+      if (next) next.addEventListener("click", function () { ir(atual + 1); });
+      thumbs.forEach(function (t) {
+        t.addEventListener("click", function () { ir(Number(t.dataset.i)); });
+      });
+
+      /* swipe (dedo ou mouse) */
+      let x0 = null;
+      stage.addEventListener("pointerdown", function (e) {
+        if (!e.target.closest("button")) x0 = e.clientX;
+      });
+      stage.addEventListener("pointerup", function (e) {
+        if (x0 === null) return;
+        const dif = e.clientX - x0;
+        x0 = null;
+        if (Math.abs(dif) > 40) ir(atual + (dif < 0 ? 1 : -1));
+      });
+      stage.addEventListener("pointercancel", function () { x0 = null; });
+    });
+  }
+
+  /* ---------- Criação dos cards ---------- */
   function createProduct(p, index) {
     const side = index % 2 === 0 ? "left" : "right";
     const article = el("article", "product product--" + side);
     article.setAttribute("aria-labelledby", "produto-" + p.id);
 
-    /* Imagem */
-    const media = el("div", "product__media reveal-media");
-    const img = document.createElement("img");
-    img.src = p.image;
-    img.alt = p.name + " — imagem de demonstração da HL Store";
-    img.width = 800;
-    img.height = 1000;
-    img.loading = index < 2 ? "eager" : "lazy";
-    img.decoding = "async";
-    img.addEventListener("error", function () {
+    /* Imagem / galeria */
+    const holder = document.createElement("div");
+    holder.innerHTML = galleryHTML(p, index).trim();
+    const gallery = holder.firstElementChild;
+    const media = gallery.querySelector(".product__media");
+    media.classList.add("reveal-media");
+
+    const firstImg = gallery.querySelector(".gallery__img");
+    function onFirstError() {
       media.replaceChildren(el("span", "product__badge", "IMAGEM INDISPONÍVEL"));
-    });
-    media.appendChild(img);
-    if (p.featured) media.appendChild(el("span", "product__badge", "DESTAQUE"));
+    }
+    firstImg.addEventListener("error", onFirstError, { once: true });
+    firstImg.addEventListener("load", function () {
+      firstImg.removeEventListener("error", onFirstError);
+    }, { once: true });
 
     /* Texto */
     const body = el("div", "product__body");
@@ -86,7 +178,7 @@
       body.appendChild(note);
     }
 
-    article.append(media, body);
+    article.append(gallery, body);
     return article;
   }
 
@@ -122,6 +214,8 @@
   PRODUCTS.forEach(function (p, i) {
     (i < limit ? mainBox : extraBox).appendChild(createProduct(p, i));
   });
+
+  initGalleries(document);
 
   if (PRODUCTS.length <= limit) {
     toggleBtn.parentElement.hidden = true;

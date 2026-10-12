@@ -118,6 +118,46 @@ h1, h2, h3, p { margin: 0; }
 .more { text-align: center; padding-top: 8px; padding-bottom: 40px; }
 .more .btn { min-width: 260px; }
 
+/* ---------- Galeria do produto ---------- */
+.product__gallery { min-width: 0; }
+.product__gallery .product__media { touch-action: pan-y; } /* rola a página, mas captura o swipe lateral */
+
+.gallery__img {
+  transition: opacity 0.25s var(--ease);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.gallery__img.is-changing { opacity: 0; }
+
+.gallery__arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 44px; height: 44px; border: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(9, 9, 9, 0.6); color: var(--white);
+  font-size: 1.4rem; line-height: 1; cursor: pointer;
+  transition: background-color 0.2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.gallery__arrow:hover { background: rgba(9, 9, 9, 0.85); }
+.gallery__arrow--prev { left: 10px; }
+.gallery__arrow--next { right: 10px; }
+
+.gallery__thumbs { display: flex; gap: 8px; margin-top: 10px; }
+.gallery__thumb {
+  width: 56px; aspect-ratio: 4 / 5; padding: 0;
+  background: var(--graphite); border: 1px solid transparent;
+  opacity: 0.5; cursor: pointer;
+  transition: opacity 0.2s var(--ease), border-color 0.2s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+}
+.gallery__thumb img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+.gallery__thumb:hover { opacity: 1; }
+.gallery__thumb.is-active { opacity: 1; border-color: var(--silver); }
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery__img, .gallery__arrow, .gallery__thumb { transition: none; }
+}
+
 /* ---------- Contato ---------- */
 .contact { background: var(--graphite); padding: 96px 0; text-align: center; }
 .contact__inner { display: flex; flex-direction: column; align-items: center; gap: 4px; }
@@ -162,7 +202,7 @@ h1, h2, h3, p { margin: 0; }
   .catalog { padding-top: 120px; }
   .product { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding-bottom: 120px; }
   .product__body { padding-top: 0; }
-  .product--right .product__media { order: 2; }
+  .product--right .product__gallery { order: 2; }
   .product--right .product__body { order: 1; }
   .product__cta { align-self: flex-start; }
   .hero .btn { min-width: 300px; }
