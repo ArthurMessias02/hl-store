@@ -19,7 +19,7 @@ window.HL_PRODUCTS = [
     id: 1,
     name: "Camiseta Tommy Hilfiger",
     description: "Camiseta Tommy Hilfiger com design moderno e acabamento impecável, perfeita para compor looks casuais e deixar o visual ainda mais elegante.",
-    price: 89.90,
+    price: 89.99,
     sizes: ["P", "M", "G","GG"],
     image: "assets/images/produto-01.webp",
     inStock: true,
