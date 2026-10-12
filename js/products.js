@@ -39,7 +39,7 @@ window.HL_PRODUCTS = [
     id: 3,
     name: "Camisa Boss e Diesel",
     description: "Tecido leve com toque de seda, corte slim e elegância para qualquer ocasião.",
-    price: 105.99,
+    price: 79.99,
     sizes: ["P", "M", "G", "GG"],
     image: "assets/images/produto-03.webp",
     inStock: true,
