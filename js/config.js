@@ -5,7 +5,6 @@
  * Tudo marcado com "DEMO" precisa ser substituído antes de publicar.
  */
 window.HL_CONFIG = {
-  // DEMO: número fictício. Formato: 55 + DDD + número, só dígitos.
   // Exemplo de formato: "5511999999999"
   whatsappNumber: "5515988250486",
 
@@ -22,4 +21,17 @@ window.HL_CONFIG = {
   // Mensagem enviada pelos botões gerais de WhatsApp (sem produto específico).
   generalMessage:
     "Olá! Vim pelo site da HL Store e gostaria de consultar tamanhos e disponibilidade das peças.",
+
+  // ---------- CARRINHO ----------
+  // Máximo de unidades da mesma peça/tamanho.
+  cartMaxPerItem: 10,
+
+  // Máximo de linhas diferentes (peça + tamanho) por pedido.
+  cartMaxLines: 20,
+
+  // Primeira linha da mensagem do pedido enviada ao WhatsApp.
+  cartWhatsappIntro: "Olá! Gostaria de fazer um pedido na HL Store:",
+
+  // Última linha da mensagem do pedido.
+  cartWhatsappOutro: "Aguardo a confirmação de disponibilidade e a forma de pagamento.",
 };

@@ -73,6 +73,7 @@ window.HL_PRODUCTS = [
       "assets/images/produto-04.webp",
       "assets/images/produto-04-02.webp",
       "assets/images/produto-04-03.webp",
+      "assets/images/produto-04-04.webp",
       "assets/images/produto-04-05.webp",
     ],
     inStock: true,

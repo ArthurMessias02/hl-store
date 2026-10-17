@@ -19,6 +19,12 @@
 <body>
   <a class="skip-link" href="#catalogo">Ir para o catálogo</a>
 
+  <!-- CARRINHO: botão fixo da sacola (contador atualizado por js/cart-ui.js) -->
+  <button class="cart-btn" id="cart-button" type="button" aria-label="Abrir carrinho, vazio" aria-haspopup="dialog" aria-controls="cart" aria-expanded="false">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    <span class="cart-btn__badge" id="cart-badge" aria-hidden="true" hidden>0</span>
+  </button>
+
   <header class="hero" id="topo">
     <div class="hero__bg" aria-hidden="true">
       <img src="assets/images/hero.svg" alt="" width="800" height="1200" fetchpriority="high" />
@@ -60,8 +66,19 @@
 
   <footer class="footer">
     <div class="container footer__inner">
-      <div class="logo logo--small">
-        <img class="logo-img logo-img--footer" src="assets/images/logo-hl.svg" alt="HL Store" width="130" height="154" loading="lazy" decoding="async" />
+      <div class="logo logo--small" aria-label="HL Store">
+        <svg class="logo-svg logo-svg--footer" viewBox="0 0 360 400" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="silver-foot" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f4f5f6"/>
+              <stop offset=".55" stop-color="#bfc3c7"/>
+              <stop offset="1" stop-color="#a4a9ae"/>
+            </linearGradient>
+          </defs>
+          <circle cx="180" cy="150" r="118" fill="none" stroke="url(#silver-foot)" stroke-width="2.4"/>
+          <text class="logo-svg__mark" x="180" y="202" text-anchor="middle" font-size="140" letter-spacing="-10" fill="url(#silver-foot)">HL</text>
+          <text class="logo-svg__name" x="189" y="338" text-anchor="middle" font-size="38" letter-spacing="18" fill="#f5f5f5">STORE</text>
+        </svg>
       </div>
       <p class="footer__name" id="footer-name">HL Store</p>
       <p class="footer__phrase">Seu estilo, sua identidade.</p>
@@ -73,8 +90,33 @@
     </div>
   </footer>
 
+  <!-- CARRINHO: painel lateral -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title" tabindex="-1">
+    <div class="cart__head">
+      <h2 class="cart__title" id="cart-title">SEU CARRINHO</h2>
+      <button class="cart__close" id="cart-close" type="button" aria-label="Fechar carrinho">&times;</button>
+    </div>
+    <div class="cart__body" id="cart-body"></div>
+    <div class="cart__foot" id="cart-foot" hidden>
+      <div class="cart__total"><span>TOTAL</span><strong id="cart-total">R$ 0,00</strong></div>
+      <a class="btn btn--primary btn--block" id="cart-checkout" href="#" target="_blank" rel="noopener noreferrer">FINALIZAR PEDIDO NO WHATSAPP</a>
+      <button class="btn btn--ghost btn--block" id="cart-continue" type="button">CONTINUAR COMPRANDO</button>
+      <button class="cart__clear" id="cart-clear" type="button">Limpar carrinho</button>
+      <p class="cart__note">Seu pedido será confirmado no atendimento pelo WhatsApp.</p>
+    </div>
+  </aside>
+
+  <!-- CARRINHO: aviso de item adicionado -->
+  <div class="toast" id="toast">
+    <span class="toast__text" id="toast-text" role="status" aria-live="polite"></span>
+    <button class="toast__btn" id="toast-open" type="button" hidden>VER CARRINHO</button>
+  </div>
+
   <script src="js/config.js"></script>
   <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/cart-ui.js"></script>
 </body>
 </html>

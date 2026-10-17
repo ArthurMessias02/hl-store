@@ -117,6 +117,31 @@
     });
   }
 
+  /* ---------- Seletor de tamanho (radios acessíveis) ---------- */
+  function sizePicker(p) {
+    const fieldset = el("fieldset", "size-picker");
+    fieldset.appendChild(el("legend", "size-picker__legend", "Escolha o tamanho"));
+
+    const options = el("div", "size-picker__options");
+    p.sizes.forEach(function (s) {
+      const label = el("label", "size-chip");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "tamanho-" + p.id;
+      input.value = s;
+      if (p.sizes.length === 1) input.checked = true;
+      label.append(input, el("span", "", s));
+      options.appendChild(label);
+    });
+
+    const error = el("p", "size-picker__error", "Escolha um tamanho para adicionar ao carrinho.");
+    error.setAttribute("role", "alert");
+    error.hidden = true;
+
+    fieldset.append(options, error);
+    return fieldset;
+  }
+
   /* ---------- Criação dos cards ---------- */
   function createProduct(p, index) {
     const side = index % 2 === 0 ? "left" : "right";
@@ -152,26 +177,44 @@
 
     const sizesWrap = el("div", "reveal");
     sizesWrap.style.setProperty("--d", "320ms");
-    const sizesLabel = el("p", "product__sizes-label", "Tamanhos");
-    sizesLabel.id = "tam-" + p.id;
-    const sizes = el("ul", "product__sizes");
-    sizes.setAttribute("aria-labelledby", sizesLabel.id);
-    p.sizes.forEach(function (s) { sizes.appendChild(el("li", "", s)); });
-    sizesWrap.append(sizesLabel, sizes);
+    if (p.inStock) {
+      /* Em estoque: o cliente escolhe o tamanho (usado pelo carrinho) */
+      sizesWrap.appendChild(sizePicker(p));
+    } else {
+      /* Indisponível: só informativo */
+      const sizesLabel = el("p", "product__sizes-label", "Tamanhos");
+      sizesLabel.id = "tam-" + p.id;
+      const sizes = el("ul", "product__sizes");
+      sizes.setAttribute("aria-labelledby", sizesLabel.id);
+      p.sizes.forEach(function (s) { sizes.appendChild(el("li", "", s)); });
+      sizesWrap.append(sizesLabel, sizes);
+    }
 
     const status = el("p", "status reveal " + (p.inStock ? "status--in" : "status--out"), p.inStock ? "EM ESTOQUE" : "INDISPONÍVEL");
     status.style.setProperty("--d", "400ms");
 
+    /* Ações: adicionar ao carrinho (só em estoque) + consulta direta no WhatsApp */
+    const actions = el("div", "product__actions reveal");
+    actions.style.setProperty("--d", "480ms");
+
+    if (p.inStock) {
+      const add = el("button", "btn btn--primary", "ADICIONAR AO CARRINHO");
+      add.type = "button";
+      add.dataset.add = p.id;
+      add.setAttribute("aria-label", "Adicionar ao carrinho: " + p.name);
+      actions.appendChild(add);
+    }
+
     const cta = document.createElement("a");
-    cta.className = "btn product__cta reveal " + (p.inStock ? "btn--primary" : "btn--ghost btn--disabled-look");
-    cta.style.setProperty("--d", "480ms");
+    cta.className = "btn " + (p.inStock ? "btn--ghost" : "btn--ghost btn--disabled-look");
     cta.href = whatsappLink(productMessage(p));
     cta.target = "_blank";
     cta.rel = "noopener noreferrer";
     cta.textContent = p.inStock ? "CONSULTAR NO WHATSAPP" : "CONSULTAR REPOSIÇÃO";
     cta.setAttribute("aria-label", (p.inStock ? "Consultar no WhatsApp: " : "Consultar reposição no WhatsApp: ") + p.name);
 
-    body.append(idx, name, desc, price, sizesWrap, status, cta);
+    actions.appendChild(cta);
+    body.append(idx, name, desc, price, sizesWrap, status, actions);
     if (!p.inStock) {
       const note = el("p", "product__note reveal", "Peça indisponível no momento. O botão abre uma consulta, não uma compra.");
       note.style.setProperty("--d", "560ms");
