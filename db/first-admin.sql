@@ -7,7 +7,7 @@
 -- Nenhuma senha passa por aqui.
 -- ============================================================
 insert into public.admin_users (user_id)
-select id from auth.users where email = 'arthurfantasma02@gmail.com'
+select id from auth.users where email = 'TROQUE-PELO-SEU-EMAIL@exemplo.com'
 on conflict do nothing;
 
 -- Conferir (deve mostrar 1 linha com o seu e-mail):
