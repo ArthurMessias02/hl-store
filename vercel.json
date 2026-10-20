@@ -1,4 +1,10 @@
 {
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/", "permanent": false },
+    { "source": "/admin/login", "destination": "/admin/#/login", "permanent": false },
+    { "source": "/admin/produtos", "destination": "/admin/#/produtos", "permanent": false },
+    { "source": "/admin/promocoes", "destination": "/admin/#/promocoes", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/admin/(.*)",
