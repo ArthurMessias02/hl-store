@@ -34,4 +34,13 @@ window.HL_CONFIG = {
 
   // Última linha da mensagem do pedido.
   cartWhatsappOutro: "Aguardo a confirmação de disponibilidade e a forma de pagamento.",
+
+  // ---------- BANCO DE DADOS (futuro; ainda não usado) ----------
+  // Só valores PÚBLICOS. Preencha na etapa de integração com os dados do seu
+  // projeto Supabase (Project Settings > API). Nunca coloque aqui a chave
+  // "service_role": ela dá acesso total ao banco.
+  supabase: {
+    url: "https://jrdkcfhfunclkssxpaei.supabase.co",     // ex.: "https://SEU-PROJETO.supabase.co"
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyZGtjZmhmdW5jbGtzc3hwYWVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NTA5MTgsImV4cCI6MjEwODAyNjkxOH0.jWcWDPtwKeFDLBp3JvAyZhu_ZdBY4RRmDxmp23wNt-k", // chave "anon" pública (a segurança vem das regras RLS do banco)
+  },
 };

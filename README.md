@@ -11,9 +11,17 @@ hl-store/
 ├── js/
 │   ├── config.js       # WhatsApp, Instagram, nome da marca
 │   ├── products.js     # Dados dos produtos (edite aqui)
+│   ├── promotions.js   # Dados das promoções (preço promocional por productId)
+│   ├── promotions-ui.js# Carrossel "Ofertas Especiais" abaixo do hero
+│   ├── data/store-data.js # Dados da vitrine: banco (se configurado) ou arquivos locais
+│   ├── boot.js         # Espera os dados e carrega cart/main/promoções/cart-ui
 │   ├── cart.js         # Carrinho: dados, localStorage, mensagem do WhatsApp
 │   ├── main.js         # Renderização, galeria, WhatsApp, "ver mais", animações
 │   └── cart-ui.js      # Carrinho: botão da sacola, painel lateral, avisos
+├── db/                 # schema.sql, seed.sql, first-admin.sql (Supabase)
+├── admin/              # painel administrativo (login, produtos, promoções)
+├── docs/GUIA-CONFIGURACAO.md  # como ligar o painel + como tudo funciona (iniciante)
+├── docs/ARQUITETURA-ADMIN.md  # decisões de arquitetura e escolha do banco
 ├── assets/images/      # Imagens (hoje: SVGs de demonstração)
 └── README.md
 ```
@@ -68,3 +76,17 @@ Aguardo a confirmação de disponibilidade e a forma de pagamento.
 3. Aumentar, diminuir e remover; recarregar a página (o carrinho deve continuar).
 4. Tocar em **FINALIZAR PEDIDO** e conferir a mensagem e o número no WhatsApp.
 5. Fechar o painel com o X, com a tecla Esc e (no computador) clicando no fundo.
+
+
+## Ofertas Especiais (carrossel abaixo do hero)
+
+- Dados em `js/promotions.js` (`window.HL_PROMOTIONS`): `productId`, `promoPrice`, `startsAt`/`endsAt` opcionais. Nome, foto e preço original vêm de `products.js`.
+- **Os preços atuais são DEMONSTRATIVOS** (`demo: true`) e a página mostra o aviso "Exemplos demonstrativos". Para ofertas reais, ajuste `promoPrice` e remova `demo: true`.
+- Itens sem estoque, com preço promocional inválido (>= preço original) ou fora do período somem do carrossel. Sem nenhum item válido, a seção inteira some.
+- Cada card leva ao produto no catálogo (onde escolhe tamanho e adiciona ao carrinho).
+
+
+## Painel administrativo e banco de dados
+Painel em `/admin/` (celular primeiro): login, produtos (com fotos), promoções e ligação com a loja.
+Usa Supabase (login, PostgreSQL e Storage). **Siga `docs/GUIA-CONFIGURACAO.md`** para ativar.
+Enquanto `supabase.url`/`anonKey` em `js/config.js` estiverem vazios, a loja usa os dados locais (`js/products.js`).

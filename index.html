@@ -41,6 +41,22 @@
   </header>
 
   <main>
+    <!-- PROMOÇÕES: carrossel abaixo do hero (js/promotions.js + js/promotions-ui.js) -->
+    <section class="promo" id="promocoes" aria-labelledby="promo-titulo">
+      <div class="container promo__head">
+        <div>
+          <h2 class="section-title reveal" id="promo-titulo">OFERTAS ESPECIAIS</h2>
+          <p class="section-sub reveal" style="--d:100ms">Peças selecionadas com preço especial</p>
+          <p class="demo-note" id="promo-demo" hidden>Exemplos demonstrativos — preços ilustrativos</p>
+        </div>
+        <div class="promo__nav" aria-label="Navegar nas ofertas">
+          <button class="promo__arrow" id="promo-prev" type="button" aria-label="Ofertas anteriores" aria-controls="promo-track">‹</button>
+          <button class="promo__arrow" id="promo-next" type="button" aria-label="Próximas ofertas" aria-controls="promo-track">›</button>
+        </div>
+      </div>
+      <ul class="promo__track reveal" id="promo-track" style="--d:200ms" role="list" tabindex="0" aria-label="Carrossel de ofertas"></ul>
+    </section>
+
     <section class="catalog" id="catalogo" aria-labelledby="catalogo-titulo">
       <div class="container catalog__head">
         <h2 class="section-title reveal" id="catalogo-titulo">OS MAIS VENDIDOS</h2>
@@ -115,8 +131,9 @@
 
   <script src="js/config.js"></script>
   <script src="js/products.js"></script>
-  <script src="js/cart.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/cart-ui.js"></script>
+  <script src="js/promotions.js"></script>
+  <script src="js/data/store-data.js"></script>
+  <!-- boot.js espera os dados e carrega, nesta ordem: cart.js, main.js, promotions-ui.js, cart-ui.js -->
+  <script src="js/boot.js"></script>
 </body>
 </html>
