@@ -82,12 +82,7 @@ URL e a chave pública ficam em `js/config.js` (ver `.env.example`).
 5. Abra a loja: o produto e a promoção aparecem.
 6. Toque em **Sair da conta**.
 
-### Rodar no computador (opcional)
-```bash
-cd hl-store
-python3 -m http.server 8000
-# loja:   http://localhost:8000
-# painel: http://localhost:8000/admin/
+
 ```
 (Funciona o mesmo; ele usa o Supabase da internet conforme o `js/config.js`.)
 
