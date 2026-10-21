@@ -82,6 +82,13 @@ img { display: block; max-width: 100%; }
 /* ---------- Listas ---------- */
 .list { margin-top: 18px; border-top: 1px solid var(--graphite); }
 .row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--graphite); }
+.product-sort-hint { margin: 12px 0; }
+.product-sort-row { gap: 8px; transition: opacity .15s, background .15s; }
+.product-sort-row.is-dragging { opacity: .45; }
+.product-sort-grip { cursor: grab; color: var(--silver); font-size: 1.45rem; line-height: 1; user-select: none; padding: 8px 2px; touch-action: none; }
+.product-sort-number { color: var(--gray); font-size: .72rem; font-variant-numeric: tabular-nums; min-width: 22px; }
+.product-sort-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.product-sort-actions button:disabled { opacity: .3; cursor: not-allowed; }
 .row__main { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; text-decoration: none; }
 .thumb { width: 64px; height: 80px; flex: none; object-fit: cover; background: var(--graphite); }
 .thumb--empty { display: flex; align-items: center; justify-content: center; text-align: center; color: var(--gray); font-size: 0.65rem; }
@@ -176,4 +183,13 @@ dialog.sheet::backdrop { background: rgba(0,0,0,0.7); }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .toast, .switch__track, .switch__track::after { transition: none; }
+}
+
+@media (max-width: 600px) {
+  .product-sort-row { gap: 5px; }
+  .product-sort-number { display: none; }
+  .product-sort-grip { font-size: 1.2rem; padding: 6px 0; }
+  .product-sort-actions { flex-direction: column; align-items: stretch; }
+  .product-sort-actions .btn { min-width: 36px; padding: 7px 8px; }
+  .product-sort-actions button[data-toggle] { font-size: .62rem; }
 }
