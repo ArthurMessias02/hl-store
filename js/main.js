@@ -172,8 +172,19 @@
     name.style.setProperty("--d", "80ms");
     const desc = el("p", "product__desc reveal", p.description);
     desc.style.setProperty("--d", "160ms");
-    const price = el("p", "product__price reveal", brl.format(p.price));
+    /* Preço do card: MESMA regra da seção de ofertas e do carrinho (HLPromo). */
+    const info = HLPromo.current(p);
+    const price = el("p", "product__price reveal" + (info.onSale ? " product__price--promo" : ""));
     price.style.setProperty("--d", "240ms");
+    if (info.onSale) {
+      price.append(
+        el("s", "product__price-old", brl.format(info.original)),
+        el("strong", "product__price-current", brl.format(info.current)),
+        el("span", "product__price-badge", "OFERTA")
+      );
+    } else {
+      price.textContent = brl.format(info.original); // sem promoção válida: só o preço normal, sem selo
+    }
 
     const sizesWrap = el("div", "reveal");
     sizesWrap.style.setProperty("--d", "320ms");

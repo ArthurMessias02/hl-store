@@ -92,6 +92,14 @@
     });
   }
 
+  async function reorderProducts(orderedIds) {
+    // Salva a ordem definida no painel no campo sort_order já existente no Supabase.
+    for (let i = 0; i < orderedIds.length; i++) {
+      await C.rest.update("products", { id: eq(orderedIds[i]) }, { sort_order: i });
+    }
+    return true;
+  }
+
   async function getProduct(id) {
     const all = await listProducts();
     return all.find(function (p) { return p.id === id; }) || null;
@@ -249,7 +257,7 @@
     MAX_PHOTOS: MAX_PHOTOS,
     prepareImage: prepareImage,
     listCategories: listCategories,
-    listProducts: listProducts, getProduct: getProduct,
+    listProducts: listProducts, getProduct: getProduct, reorderProducts: reorderProducts,
     validateProduct: validateProduct, saveProduct: saveProduct, setProductVisible: setProductVisible, deleteProduct: deleteProduct,
     discountPct: discountPct, promoStatus: promoStatus, listPromotions: listPromotions,
     validatePromotion: validatePromotion, savePromotion: savePromotion,

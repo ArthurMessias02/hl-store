@@ -80,8 +80,8 @@ Aguardo a confirmação de disponibilidade e a forma de pagamento.
 
 ## Ofertas Especiais (carrossel abaixo do hero)
 
-- Dados em `js/promotions.js` (`window.HL_PROMOTIONS`): `productId`, `promoPrice`, `startsAt`/`endsAt` opcionais. Nome, foto e preço original vêm de `products.js`.
-- **Os preços atuais são DEMONSTRATIVOS** (`demo: true`) e a página mostra o aviso "Exemplos demonstrativos". Para ofertas reais, ajuste `promoPrice` e remova `demo: true`.
+- Dados em `js/promotions.js` (`window.HL_PROMOTIONS`): `productId`, `promoPrice`, `isActive`, `startsAt`/`endsAt` opcionais. Nome, foto e preço original vêm de `products.js`.
+- `js/promotions.js` começa vazio. As promoções reais vêm do Supabase (painel admin). No modo local, cada item precisa de `isActive: true`. A regra de validade está em `js/promotion-rules.js`.
 - Itens sem estoque, com preço promocional inválido (>= preço original) ou fora do período somem do carrossel. Sem nenhum item válido, a seção inteira some.
 - Cada card leva ao produto no catálogo (onde escolhe tamanho e adiciona ao carrinho).
 

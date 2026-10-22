@@ -33,9 +33,12 @@ window.HL_DATA = (function () {
   const state = {
     source: configured ? "supabase" : "local",
     products: window.HL_PRODUCTS || [],
-    promotions: window.HL_PROMOTIONS || [],
     content: {},
   };
+
+  /* Modo local (sem Supabase): promoções de js/promotions.js passam pela MESMA regra.
+     Cada item precisa de { productId, promoPrice, isActive: true, startsAt?, endsAt? }. */
+  if (!configured) HLPromo.setData(window.HL_PROMOTIONS || [], state.products);
 
   /* Foto: caminho local legado (assets/...) ou arquivo no Storage do Supabase */
   function imageUrl(path) {
@@ -68,7 +71,7 @@ window.HL_DATA = (function () {
     return Promise.all([
       get("products", "select=*&order=sort_order.asc,created_at.asc", ctl.signal),
       get("product_images", "select=product_id,path,sort_order&order=sort_order.asc", ctl.signal),
-      get("promotions", "select=product_id,promo_price,starts_at,ends_at,is_active&order=sort_order.asc,created_at.desc", ctl.signal),
+      HLPromo.fetchPromotions(BASE, headers(), ctl.signal), // nunca lança: { ok, rows, error }
       get("site_content", "select=key,value", ctl.signal),
     ]).then(function (r) {
       clearTimeout(timer);
@@ -92,26 +95,28 @@ window.HL_DATA = (function () {
       const byUuid = {};
       r[0].forEach(function (p) { byUuid[p.id] = p.public_id; });
 
-      const seen = {};
-      const promotions = r[2].filter(function (x) {
-        return x.is_active === true && byUuid[x.product_id] !== undefined && !seen[x.product_id] && (seen[x.product_id] = true);
-      }).map(function (x) {
-        return { productId: byUuid[x.product_id], promoPrice: Number(x.promo_price), startsAt: x.starts_at || undefined, endsAt: x.ends_at || undefined };
-      });
+      /* Validação de promoções num lugar só: js/promotion-rules.js (HLPromo).
+         Falha ao carregar promoções = nenhum desconto (nunca preço fictício). */
+      if (r[2].ok) {
+        HLPromo.setData(r[2].rows.map(function (row) { return HLPromo.fromRow(row, byUuid); }), products, {
+          onConflict: function (id) { console.warn("HL Store: mais de uma promoção válida para o produto " + id + "; vale a de menor sort_order."); },
+        });
+      } else {
+        console.warn("HL Store: promoções indisponíveis, sem descontos.", r[2].error);
+        HLPromo.setError(r[2].error);
+      }
 
       const content = {};
       r[3].forEach(function (c) { content[c.key] = c.value; });
 
-      state.products = products; state.promotions = promotions; state.content = content;
+      state.products = products; state.content = content;
       /* O carrinho (js/cart.js) e a vitrine leem window.HL_PRODUCTS */
       window.HL_PRODUCTS = products;
-      window.HL_PROMOTIONS = promotions;
     }).catch(function (err) {
       clearTimeout(timer);
       console.warn("HL Store: banco indisponível, usando cópia local dos produtos.", err);
       state.source = "local-fallback";
-      state.promotions = [];
-      window.HL_PROMOTIONS = [];
+      HLPromo.setError(err);
     });
   }
 
@@ -121,7 +126,7 @@ window.HL_DATA = (function () {
     ready: ready,
     get source() { return state.source; },
     getProducts: function () { return state.products; },
-    getPromotions: function () { return state.promotions; },
+    getPromotions: function () { return HLPromo.resolved; }, // { [productId]: promoção válida }
     getSiteContent: function () { return state.content; }, // textos editáveis: ainda não usados pela vitrine
   };
 })();

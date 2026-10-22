@@ -150,7 +150,7 @@
   function lines() {
     return items.map(function (it) {
       const p = findProduct(it.id);
-      const unit = toCents(p.price);
+      const unit = HLPromo.current(p).currentCents; // mesma regra do card e das ofertas
       return {
         key: keyOf(it.id, it.size),
         id: p.id,

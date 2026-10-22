@@ -99,24 +99,52 @@
     U.fill(root, pageHead("Produtos", "#/"), loading());
     try {
       const products = await D.listProducts();
-      const list = h("ul", { class: "list" });
-      products.forEach(function (p) {
-        const visible = p.status === "published";
-        const priceNow = p.promo && D.promoStatus(p.promo).key === "active" ? p.promo.promo_price : null;
-        list.appendChild(h("li", { class: "row" },
-          h("a", { class: "row__main", href: "#/produtos/" + p.id },
-            thumb(p),
-            h("span", { class: "row__info" },
-              h("span", { class: "row__name" }, p.name),
-              h("span", { class: "row__price" }, priceNow ? [h("s", null, U.brl(p.price)), " ", U.brl(priceNow)] : U.brl(p.price)),
-              h("span", { class: "row__badges" },
-                badge(visible ? "Visível" : "Oculto", visible ? "green" : "gray"),
-                p.in_stock ? null : badge("Sem estoque", "red"),
-                p.promo ? badge("Promoção", "silver") : null))),
-          h("button", { type: "button", class: "btn btn--small btn--ghost", "data-id": p.id }, visible ? "Ocultar" : "Mostrar")));
-      });
+      const list = h("ul", { class: "list product-sort-list" });
+      let draggedId = null;
+      function renderRows() {
+        U.fill(list);
+        products.forEach(function (p, index) {
+          const visible = p.status === "published";
+          const priceNow = p.promo && D.promoStatus(p.promo).key === "active" ? p.promo.promo_price : null;
+          const row = h("li", { class: "row product-sort-row", draggable: "true", "data-product-id": p.id },
+            h("span", { class: "product-sort-grip", title: "Arraste para reordenar", "aria-label": "Arraste para reordenar" }, "⠿"),
+            h("span", { class: "product-sort-number" }, String(index + 1).padStart(2, "0")),
+            h("a", { class: "row__main", href: "#/produtos/" + p.id },
+              thumb(p),
+              h("span", { class: "row__info" },
+                h("span", { class: "row__name" }, p.name),
+                h("span", { class: "row__price" }, priceNow ? [h("s", null, U.brl(p.price)), " ", U.brl(priceNow)] : U.brl(p.price)),
+                h("span", { class: "row__badges" },
+                  badge(visible ? "Visível" : "Oculto", visible ? "green" : "gray"),
+                  p.in_stock ? null : badge("Sem estoque", "red"),
+                  p.promo ? badge("Promoção", "silver") : null))),
+            h("span", { class: "product-sort-actions" },
+              h("button", { type: "button", class: "btn btn--small btn--ghost", "data-move": "up", "data-id": p.id, disabled: index === 0, title: "Mover para cima", "aria-label": "Mover " + p.name + " para cima" }, "↑"),
+              h("button", { type: "button", class: "btn btn--small btn--ghost", "data-move": "down", "data-id": p.id, disabled: index === products.length - 1, title: "Mover para baixo", "aria-label": "Mover " + p.name + " para baixo" }, "↓"),
+              h("button", { type: "button", class: "btn btn--small btn--ghost", "data-toggle": "true", "data-id": p.id }, visible ? "Ocultar" : "Mostrar")));
+          list.appendChild(row);
+        });
+      }
+      async function saveOrder() {
+        try {
+          const buttons = list.querySelectorAll("button");
+          buttons.forEach(function (b) { b.disabled = true; });
+          await D.reorderProducts(products.map(function (p) { return p.id; }));
+          U.toast("Ordem dos produtos salva!");
+          renderRows();
+        } catch (err) { U.toast("Não foi possível salvar a ordem: " + err.message, "error"); }
+        finally { renderRows(); }
+      }
       list.addEventListener("click", async function (e) {
-        const btn = e.target.closest("button[data-id]");
+        const moveBtn = e.target.closest("button[data-move]");
+        if (moveBtn) {
+          const index = products.findIndex(function (p) { return p.id === moveBtn.getAttribute("data-id"); });
+          const next = moveBtn.getAttribute("data-move") === "up" ? index - 1 : index + 1;
+          if (index < 0 || next < 0 || next >= products.length) return;
+          const item = products.splice(index, 1)[0]; products.splice(next, 0, item);
+          renderRows(); await saveOrder(); return;
+        }
+        const btn = e.target.closest("button[data-toggle]");
         if (!btn) return;
         const p = products.find(function (x) { return x.id === btn.getAttribute("data-id"); });
         try {
@@ -125,7 +153,33 @@
           productList(root);
         } catch (err) { U.toast(err.message, "error"); }
       });
+      list.addEventListener("dragstart", function (e) {
+        const row = e.target.closest("[data-product-id]"); if (!row) return;
+        draggedId = row.getAttribute("data-product-id"); row.classList.add("is-dragging");
+        if (e.dataTransfer) { e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", draggedId); }
+      });
+      list.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        const target = e.target.closest("[data-product-id]");
+        const dragged = list.querySelector('[data-product-id="' + draggedId + '"]');
+        if (!target || !dragged || target === dragged || !draggedId) return;
+        const rect = target.getBoundingClientRect();
+        const after = e.clientY > rect.top + rect.height / 2;
+        list.insertBefore(dragged, after ? target.nextSibling : target);
+      });
+      list.addEventListener("drop", function (e) {
+        e.preventDefault();
+        if (draggedId) {
+          const orderedIds = Array.prototype.map.call(list.querySelectorAll("[data-product-id]"), function (row) { return row.getAttribute("data-product-id"); });
+          orderedIds.forEach(function (id, index) { const p = products.find(function (item) { return item.id === id; }); if (p) products[index] = p; });
+          saveOrder();
+        }
+        draggedId = null;
+      });
+      list.addEventListener("dragend", function () { draggedId = null; list.querySelectorAll(".is-dragging").forEach(function (el) { el.classList.remove("is-dragging"); }); });
+      renderRows();
       U.fill(root, pageHead("Produtos", "#/"),
+        h("p", { class: "field__hint product-sort-hint" }, "Reordene arrastando os produtos ou usando as setas. A ordem salva define a sequência no painel e na consulta de produtos."),
         h("a", { class: "btn btn--primary btn--xl", href: "#/produtos/novo" }, "+ ADICIONAR PRODUTO"),
         products.length ? list : h("p", { class: "state" }, "Nenhum produto cadastrado ainda."));
     } catch (e) { U.fill(root, pageHead("Produtos", "#/"), failure(e, function () { productList(root); })); }

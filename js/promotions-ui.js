@@ -8,40 +8,14 @@
   if (!section || !track) return;
 
   const PRODUCTS = window.HL_DATA.getProducts();
-  const PROMOS = window.HL_DATA.getPromotions();
   const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Aceita "AAAA-MM-DD" (arquivo local; fim = último momento do dia) ou timestamp ISO (banco) */
-  function toTime(value, isEnd) {
-    if (!value) return null;
-    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-      const p = value.split("-").map(Number);
-      const d = isEnd ? new Date(p[0], p[1] - 1, p[2], 23, 59, 59, 999) : new Date(p[0], p[1] - 1, p[2]);
-      return d.getTime();
-    }
-    const t = Date.parse(value);
-    return isNaN(t) ? null : t;
-  }
-
-  /* Junta promoção + produto e descarta o que não vale (sem produto, sem estoque, fora do prazo, preço inválido) */
+  /* Só entra aqui quem tem promoção VÁLIDA segundo HLPromo (js/promotion-rules.js):
+     a mesma regra usada pelo card do catálogo, pelo carrinho e pela mensagem do WhatsApp. */
   function activeItems() {
-    const now = Date.now();
-    const seen = {};
-    return PROMOS.map(function (promo) {
-      const p = PRODUCTS.find(function (x) { return x.id === promo.productId; });
-      return p ? { p: p, promo: promo } : null;
-    }).filter(function (it) {
-      if (!it || !it.p.inStock) return false;
-      const { promo, p } = it;
-      if (!(promo.promoPrice > 0 && promo.promoPrice < p.price)) return false;
-      const start = toTime(promo.startsAt, false), end = toTime(promo.endsAt, true);
-      if (start !== null && now < start) return false;
-      if (end !== null && now > end) return false;
-      if (seen[p.id]) return false; // a mesma promoção nunca aparece duas vezes
-      seen[p.id] = true;
-      return true;
-    });
+    return PRODUCTS.filter(function (p) { return p.inStock && HLPromo.current(p).onSale; })
+      .map(function (p) { return { p: p, info: HLPromo.current(p) }; });
   }
 
   function el(tag, className, text) {
@@ -52,13 +26,13 @@
   }
 
   function card(it) {
-    const { p, promo } = it;
-    const off = Math.round((1 - promo.promoPrice / p.price) * 100);
+    const p = it.p, info = it.info;
+    const off = info.discountPct;
 
     const li = el("li", "promo-card");
     const a = el("a", "promo-card__link");
     a.href = "#produto-" + p.id;
-    a.setAttribute("aria-label", p.name + ", de " + brl.format(p.price) + " por " + brl.format(promo.promoPrice) + ", " + off + "% de desconto");
+    a.setAttribute("aria-label", p.name + ", de " + brl.format(info.original) + " por " + brl.format(info.current) + ", " + off + "% de desconto");
 
     const media = el("div", "promo-card__media");
     const img = document.createElement("img");
@@ -71,9 +45,9 @@
     const body = el("div", "promo-card__body");
     const name = el("h3", "promo-card__name", p.name);
     const prices = el("p", "promo-card__prices");
-    const old = el("s", "promo-card__old", brl.format(p.price));
+    const old = el("s", "promo-card__old", brl.format(info.original));
     old.setAttribute("aria-hidden", "true");
-    prices.append(old, el("strong", "promo-card__now", brl.format(promo.promoPrice)));
+    prices.append(old, el("strong", "promo-card__now", brl.format(info.current)));
     body.append(name, prices);
 
     a.append(media, body);
@@ -87,7 +61,7 @@
   items.forEach(function (it) { track.appendChild(card(it)); });
 
   const demoNote = document.getElementById("promo-demo");
-  if (demoNote) demoNote.hidden = !items.some(function (it) { return it.promo.demo; });
+  if (demoNote) demoNote.hidden = true; // não existem mais ofertas de demonstração
 
   /* ---------- Navegação ---------- */
   const prev = document.getElementById("promo-prev");
