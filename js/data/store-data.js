@@ -68,7 +68,7 @@ window.HL_DATA = (function () {
     return Promise.all([
       get("products", "select=*&order=sort_order.asc,created_at.asc", ctl.signal),
       get("product_images", "select=product_id,path,sort_order&order=sort_order.asc", ctl.signal),
-      get("promotions", "select=product_id,promo_price,starts_at,ends_at&order=sort_order.asc,created_at.desc", ctl.signal),
+      get("promotions", "select=product_id,promo_price,starts_at,ends_at,is_active&order=sort_order.asc,created_at.desc", ctl.signal),
       get("site_content", "select=key,value", ctl.signal),
     ]).then(function (r) {
       clearTimeout(timer);
@@ -94,7 +94,7 @@ window.HL_DATA = (function () {
 
       const seen = {};
       const promotions = r[2].filter(function (x) {
-        return byUuid[x.product_id] !== undefined && !seen[x.product_id] && (seen[x.product_id] = true);
+        return x.is_active === true && byUuid[x.product_id] !== undefined && !seen[x.product_id] && (seen[x.product_id] = true);
       }).map(function (x) {
         return { productId: byUuid[x.product_id], promoPrice: Number(x.promo_price), startsAt: x.starts_at || undefined, endsAt: x.ends_at || undefined };
       });
