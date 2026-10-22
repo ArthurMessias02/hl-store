@@ -389,10 +389,3 @@ html.cart-open body { padding-right: var(--sbw, 0px); }
   .product { gap: 96px; }
   .logo-svg--hero { width: 440px; }
 }
-
-
-/* Preços promocionais sincronizados entre ofertas, catálogo e carrinho. */
-.product__price--promo { display: flex; align-items: baseline; flex-wrap: wrap; gap: .45rem .65rem; }
-.product__price-old { color: #92979c; font-size: .88em; font-weight: 400; }
-.product__price-current { color: #f4f5f6; font-weight: 700; }
-.product__price-badge { display: inline-flex; align-items: center; padding: .2rem .45rem; border: 1px solid #bfc3c7; border-radius: 2px; color: #bfc3c7; font-size: .62rem; font-weight: 700; letter-spacing: .08em; }

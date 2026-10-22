@@ -1,6 +1,5 @@
 /**
- * PROMOÇÕES REAIS DA HL STORE
- * Lista vazia por padrão: não exibe descontos fictícios.
- * Cadastre ofertas reais pelo painel administrativo/Supabase.
+ * Promoções locais: nenhuma oferta ativa por padrão.
+ * Cadastre somente descontos reais no painel administrativo.
  */
 window.HL_PROMOTIONS = [];

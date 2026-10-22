@@ -1,8 +1,7 @@
-# Correção das promoções
+# Correção de promoções indevidas
 
-- Removidas as ofertas fictícias do modo local (`js/promotions.js`), incluindo o desconto artificial da Bermuda Diesel.
-- A vitrine passa a carregar do Supabase apenas promoções com `is_active = true`.
-- As regras de validade e preço continuam sendo verificadas na seção de ofertas.
-- O preço normal da Bermuda Diesel não foi alterado: permanece em R$ 89,99 nos dados locais.
+1. O arquivo local não contém mais ofertas de demonstração.
+2. A vitrine busca a coluna `is_active` do Supabase e ignora promoções desativadas.
+3. A Bermuda Diesel não recebe desconto automaticamente por estar cadastrada no catálogo.
 
-Se a loja estiver conectada ao Supabase e houver uma promoção antiga para a Bermuda Diesel, desative-a ou exclua-a no painel administrativo > Promoções.
+Importante: no painel administrativo, abra Promoções e desative/exclua a oferta antiga da Bermuda Diesel (e qualquer oferta indevida). A alteração no código impede que ofertas inativas sejam mostradas, mas não apaga registros do banco. Depois, publique os arquivos atualizados na Vercel.

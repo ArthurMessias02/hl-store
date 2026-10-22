@@ -7,27 +7,6 @@
 
   const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
-  /* Preço promocional compartilhado com os cards da vitrine. */
-  function promotionFor(product) {
-    const now = Date.now();
-    const promos = (window.HL_DATA && window.HL_DATA.getPromotions()) || window.HL_PROMOTIONS || [];
-    return promos.find(function (promo) {
-      if (String(promo.productId) !== String(product.id)) return false;
-      if (!(Number(promo.promoPrice) > 0 && Number(promo.promoPrice) < Number(product.price))) return false;
-      function dateTime(value, end) {
-        if (!value) return null;
-        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-          const parts = value.split("-").map(Number);
-          return (end ? new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59, 999) : new Date(parts[0], parts[1] - 1, parts[2])).getTime();
-        }
-        const parsed = Date.parse(value);
-        return Number.isNaN(parsed) ? null : parsed;
-      }
-      const start = dateTime(promo.startsAt, false), end = dateTime(promo.endsAt, true);
-      return (start === null || now >= start) && (end === null || now <= end);
-    });
-  }
-
   /* ---------- WhatsApp ---------- */
   function whatsappLink(message) {
     return "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(message);
@@ -193,17 +172,8 @@
     name.style.setProperty("--d", "80ms");
     const desc = el("p", "product__desc reveal", p.description);
     desc.style.setProperty("--d", "160ms");
-    const promo = promotionFor(p);
-    const price = el("p", "product__price reveal" + (promo ? " product__price--promo" : ""));
+    const price = el("p", "product__price reveal", brl.format(p.price));
     price.style.setProperty("--d", "240ms");
-    if (promo) {
-      const oldPrice = el("s", "product__price-old", brl.format(p.price));
-      const currentPrice = el("strong", "product__price-current", brl.format(Number(promo.promoPrice)));
-      const badge = el("span", "product__price-badge", "OFERTA");
-      price.append(oldPrice, currentPrice, badge);
-    } else {
-      price.textContent = brl.format(p.price);
-    }
 
     const sizesWrap = el("div", "reveal");
     sizesWrap.style.setProperty("--d", "320ms");
