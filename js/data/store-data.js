@@ -40,6 +40,13 @@ window.HL_DATA = (function () {
      Cada item precisa de { productId, promoPrice, isActive: true, startsAt?, endsAt? }. */
   if (!configured) HLPromo.setData(window.HL_PROMOTIONS || [], state.products);
 
+  /* Identificador do produto na vitrine (carrinho, #produto-N, promoções).
+     Normalmente é products.public_id; produtos cadastrados sem esse número
+     (public_id nulo no banco) usam o uuid, para não ficarem sem identificador. */
+  function publicId(p) {
+    return p.public_id !== null && p.public_id !== undefined ? p.public_id : p.id;
+  }
+
   /* Foto: caminho local legado (assets/...) ou arquivo no Storage do Supabase */
   function imageUrl(path) {
     if (/^(https?:)?\/\//.test(path) || path.indexOf("assets/") === 0) return path;
@@ -81,7 +88,7 @@ window.HL_DATA = (function () {
       const products = r[0].map(function (p) {
         const imgs = photos[p.id] || [];
         return {
-          id: p.public_id,
+          id: publicId(p),
           name: p.name,
           description: p.description,
           price: Number(p.price),
@@ -93,7 +100,7 @@ window.HL_DATA = (function () {
         };
       });
       const byUuid = {};
-      r[0].forEach(function (p) { byUuid[p.id] = p.public_id; });
+      r[0].forEach(function (p) { byUuid[p.id] = publicId(p); });
 
       /* Validação de promoções num lugar só: js/promotion-rules.js (HLPromo).
          Falha ao carregar promoções = nenhum desconto (nunca preço fictício). */

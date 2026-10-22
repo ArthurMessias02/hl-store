@@ -129,5 +129,13 @@ with sync_playwright() as pw:
           [p["name"] for p in s["prods"]] == ["Camiseta Tommy", "Shorts Diesel"] and shorts(s)["badge"] and not next(p for p in s["prods"] if p["name"]=="Camiseta Tommy")["badge"])
     b.close()
 
+    # produtos criados no admin SEM public_id (null): promoção, card, carrinho e link continuam certos
+    nulos = [dict(PRODUCTS[0], public_id=None), dict(PRODUCTS[1], public_id=None)]
+    b, pg = run(pw, [promo("a", 65.99, True)], products=nulos); s = state(pg)
+    check("public_id nulo: promoção aparece no card e na seção, só no produto certo", shorts(s)["badge"] and "65,99" in shorts(s)["price"] and len(s["cards"]) == 1 and not next(p for p in s["prods"] if p["name"] == "Camiseta Tommy")["badge"], str(s))
+    check("public_id nulo: link do card aponta para um alvo que existe", pg.locator(s["cards"][0]["href"]).count() == 1, s["cards"][0]["href"])
+    c = add_to_cart(pg, "Shorts Diesel"); check("public_id nulo: carrinho cobra 65,99", c["unit"] == 6599, str(c))
+    b.close()
+
 print(f"\n{passed} verificações ok, {len(fails)} falhas")
 sys.exit(1 if fails else 0)
