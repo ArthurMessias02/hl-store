@@ -38,6 +38,28 @@
     return Math.round(Number(price) * 100);
   }
 
+  function currentPrice(product) {
+    const promos = root.HL_PROMOTIONS || [];
+    const now = Date.now();
+    const promo = promos.find(function (item) {
+      if (String(item.productId) !== String(product.id)) return false;
+      const value = Number(item.promoPrice);
+      if (!(value > 0 && value < Number(product.price))) return false;
+      function dateTime(date, end) {
+        if (!date) return null;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+          const parts = date.split("-").map(Number);
+          return (end ? new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59, 999) : new Date(parts[0], parts[1] - 1, parts[2])).getTime();
+        }
+        const parsed = Date.parse(date);
+        return Number.isNaN(parsed) ? null : parsed;
+      }
+      const start = dateTime(item.startsAt, false), end = dateTime(item.endsAt, true);
+      return (start === null || now >= start) && (end === null || now <= end);
+    });
+    return promo ? Number(promo.promoPrice) : Number(product.price);
+  }
+
   /** Formata centavos como moeda. plain=true troca o espaço "especial" por um espaço comum. */
   function format(cents, plain) {
     const text = currency.format(cents / 100);
@@ -150,7 +172,7 @@
   function lines() {
     return items.map(function (it) {
       const p = findProduct(it.id);
-      const unit = toCents(p.price);
+      const unit = toCents(currentPrice(p));
       return {
         key: keyOf(it.id, it.size),
         id: p.id,
