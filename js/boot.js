@@ -5,7 +5,7 @@
 (function () {
   "use strict";
 
-  const SCRIPTS = ["js/cart.js", "js/main.js", "js/promotions-ui.js", "js/cart-ui.js"];
+  const SCRIPTS = ["js/cart.js", "js/coupons.js", "js/main.js", "js/promotions-ui.js", "js/cart-ui.js"];
 
   function loadAll() {
     SCRIPTS.forEach(function (src) {

@@ -174,7 +174,11 @@
   }
 
   /* ---------- Mensagem do WhatsApp ---------- */
-  function message() {
+  /**
+   * extra (opcional, só quando há cupom reservado): { couponCode, discountCents, orderRef }.
+   * Sem cupom a mensagem é exatamente a de sempre.
+   */
+  function message(extra) {
     const intro = CONFIG.cartWhatsappIntro || "Olá! Gostaria de fazer um pedido:";
     const outro = CONFIG.cartWhatsappOutro || "";
 
@@ -186,13 +190,23 @@
       return row;
     });
 
-    const parts = [intro, "", rows.join("\n"), "", "Total: " + format(totalCents(), true)];
+    const subtotal = totalCents();
+    const discount = extra && extra.discountCents > 0 ? Math.min(extra.discountCents, subtotal) : 0;
+    const parts = [intro, "", rows.join("\n"), ""];
+    if (discount > 0) {
+      parts.push("Subtotal: " + format(subtotal, true));
+      parts.push("Cupom " + extra.couponCode + ": -" + format(discount, true));
+      parts.push("Total: " + format(subtotal - discount, true));
+      if (extra.orderRef) parts.push("Pedido: " + extra.orderRef);
+    } else {
+      parts.push("Total: " + format(subtotal, true));
+    }
     if (outro) parts.push("", outro);
     return parts.join("\n");
   }
 
-  function whatsappUrl() {
-    return "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(message());
+  function whatsappUrl(extra) {
+    return "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(message(extra));
   }
 
   /* ---------- Eventos ---------- */

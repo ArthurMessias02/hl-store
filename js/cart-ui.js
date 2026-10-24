@@ -22,6 +22,21 @@
   const closeBtn = $("cart-close");
   const continueBtn = $("cart-continue");
   const clearBtn = $("cart-clear");
+  const subtotalEl = $("cart-subtotal");
+  const discountEl = $("cart-discount");
+  const discountLabel = $("cart-discount-label");
+  const summary = $("cart-summary");
+  const noteEl = $("cart-note");
+  const couponBox = $("coupon");
+  const couponToggle = $("coupon-toggle");
+  const couponForm = $("coupon-form");
+  const couponInput = $("coupon-input");
+  const couponApply = $("coupon-apply");
+  const couponApplied = $("coupon-applied");
+  const couponTag = $("coupon-tag");
+  const couponAppliedText = $("coupon-applied-text");
+  const couponRemove = $("coupon-remove");
+  const couponMsg = $("coupon-msg");
   const toast = $("toast");
   const toastText = $("toast-text");
   const toastOpen = $("toast-open");
@@ -176,8 +191,115 @@
     body.appendChild(list);
 
     foot.hidden = false;
-    totalEl.textContent = Cart.format(Cart.totalCents());
-    checkout.href = Cart.whatsappUrl();
+    renderFoot();
+  }
+
+  /* ---------- Rodapé: cupom, subtotal, desconto e total ---------- */
+  const Coupons = window.HLCoupons;
+  let couponFormOpen = false;
+  let couponNotice = ""; // aviso local (ex.: falha de rede ao enviar o pedido); some no próximo desenho
+
+  function discountText(result) {
+    if (!result) return "";
+    if (result.discount_type === "percent") return String(parseFloat(result.discount_value)).replace(".", ",") + "% de desconto";
+    return Cart.format(Math.round(Number(result.discount_value) * 100)) + " de desconto";
+  }
+
+  function renderFoot() {
+    if (foot.hidden && !Cart.count()) return;
+    const subtotal = Cart.totalCents();
+    const discount = Coupons ? Coupons.discountCents() : 0;
+    totalEl.textContent = Cart.format(subtotal - discount);
+    checkout.href = Cart.whatsappUrl(); // sem cupom: a mensagem de sempre (o cupom só entra depois de reservado)
+
+    if (!Coupons || !Coupons.enabled) { couponBox.hidden = true; summary.hidden = true; return; }
+    couponBox.hidden = false;
+
+    const st = Coupons.state;
+    const applied = st.status === "applied" && discount > 0;
+    const checking = st.status === "checking";
+    const failed = st.status === "invalid" || st.status === "error";
+    const showForm = !applied && !checking && (couponFormOpen || failed);
+
+    couponToggle.hidden = applied || checking || showForm;
+    couponToggle.setAttribute("aria-expanded", String(showForm));
+    couponForm.hidden = !showForm;
+    couponApplied.hidden = !(applied || checking);
+    couponApply.disabled = checking;
+    couponTag.textContent = st.code;
+    couponAppliedText.textContent = checking ? "Verificando cupom…" : discountText(st.result);
+    couponRemove.hidden = checking;
+
+    if (showForm && st.code && document.activeElement !== couponInput) couponInput.value = st.code;
+
+    const msg = couponNotice || (failed ? st.message : "");
+    couponMsg.hidden = !msg;
+    couponMsg.textContent = msg;
+    couponMsg.classList.toggle("is-error", !!msg);
+    couponNotice = "";
+
+    summary.hidden = !applied;
+    if (applied) {
+      subtotalEl.textContent = Cart.format(subtotal);
+      discountLabel.textContent = "Desconto (" + st.code + ")";
+      discountEl.textContent = "−" + Cart.format(discount);
+    }
+    noteEl.textContent = applied
+      ? "O desconto é conferido pela equipe ao confirmar o pedido no WhatsApp."
+      : "Seu pedido será confirmado no atendimento pelo WhatsApp.";
+  }
+
+  if (Coupons) {
+    Coupons.subscribe(renderFoot);
+
+    couponToggle.addEventListener("click", function () {
+      couponFormOpen = true;
+      renderFoot();
+      couponInput.focus();
+    });
+
+    couponForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      couponNotice = "";
+      Coupons.apply(couponInput.value);
+    });
+
+    couponRemove.addEventListener("click", function () {
+      couponFormOpen = false;
+      couponInput.value = "";
+      Coupons.remove();
+      couponToggle.focus();
+    });
+
+    /* Com cupom aplicado, o banco confere de novo e RESERVA o cupom antes de abrir o WhatsApp.
+       Sem cupom, o link funciona como sempre. */
+    checkout.addEventListener("click", function (e) {
+      if (Coupons.state.status !== "applied" || Coupons.discountCents() <= 0) return;
+      e.preventDefault();
+      if (checkout.getAttribute("aria-busy") === "true") return;
+
+      const label = checkout.textContent;
+      checkout.setAttribute("aria-busy", "true");
+      checkout.textContent = "CONFERINDO CUPOM…";
+      /* Abre a aba agora (o clique é o que o navegador exige); o endereço entra quando o banco responder */
+      let win = null;
+      try { win = window.open("", "_blank"); if (win) win.opener = null; } catch (err) { win = null; }
+
+      Coupons.reserve().then(function (r) {
+        if (r.ok) {
+          const url = Cart.whatsappUrl({ couponCode: r.code, discountCents: r.discountCents, orderRef: r.orderRef });
+          if (win) win.location.href = url; else window.location.href = url;
+        } else {
+          if (win) win.close();
+          couponNotice = r.message;
+          showToast(r.message);
+        }
+      }).then(function () {
+        checkout.removeAttribute("aria-busy");
+        checkout.textContent = label;
+        renderFoot();
+      });
+    });
   }
 
   /* Redesenha mantendo o foco no mesmo controle (importante para teclado e leitor de tela) */

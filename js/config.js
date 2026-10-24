@@ -35,6 +35,11 @@ window.HL_CONFIG = {
   // Última linha da mensagem do pedido.
   cartWhatsappOutro: "Aguardo a confirmação de disponibilidade e a forma de pagamento.",
 
+  // ---------- CUPOM DE BOAS-VINDAS ----------
+  // Código mostrado no popup de cadastro. PRECISA ser igual ao cupom criado no banco
+  // (db/coupons.sql cria o BEMVINDO10). Quem valida o cupom é o banco, não este valor.
+  welcomeCouponCode: "BEMVINDO10",
+
   // ---------- BANCO DE DADOS (futuro; ainda não usado) ----------
   // Só valores PÚBLICOS. Preencha na etapa de integração com os dados do seu
   // projeto Supabase (Project Settings > API). Nunca coloque aqui a chave

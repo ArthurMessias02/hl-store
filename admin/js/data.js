@@ -15,6 +15,9 @@
 
   function eq(v) { return "eq." + v; }
 
+
+
+
   /* =============== FOTOS: reduzir antes de enviar =============== */
   async function loadBitmap(file) {
     if (window.createImageBitmap) {

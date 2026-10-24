@@ -13,7 +13,12 @@
  *  - O token da sessão fica no localStorage do navegador do dono (é uma credencial
  *    TEMPORÁRIA do usuário, não uma senha nem uma chave do projeto).
  */
+
 (function () {
+
+
+
+
   "use strict";
 
   const CFG = (window.HL_CONFIG && window.HL_CONFIG.supabase) || {};
@@ -206,6 +211,12 @@
       });
       if (!rows.length) throw new ApiError("Não foi possível salvar: item não encontrado ou sem permissão.", 403, "no_rows");
       return rows;
+    },
+    /** Chama uma função do banco (POST /rest/v1/rpc/<nome>) com a sessão do admin. */
+    rpc: function (name, args) {
+      return request("/rest/v1/rpc/" + name, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(args || {}),
+      });
     },
     remove: async function (table, match) {
       const rows = await request("/rest/v1/" + table + qs(match), { method: "DELETE", headers: { Prefer: "return=representation" } });

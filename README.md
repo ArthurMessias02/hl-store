@@ -12,6 +12,7 @@ hl-store/
 │   ├── config.js       # WhatsApp, Instagram, nome da marca
 │   ├── products.js     # Dados dos produtos (edite aqui)
 │   ├── promotions.js   # Dados das promoções (preço promocional por productId)
+│   ├── coupons.js      # Cupom no carrinho (consulta o banco; não calcula desconto)
 │   ├── promotions-ui.js# Carrossel "Ofertas Especiais" abaixo do hero
 │   ├── data/store-data.js # Dados da vitrine: banco (se configurado) ou arquivos locais
 │   ├── boot.js         # Espera os dados e carrega cart/main/promoções/cart-ui
@@ -20,6 +21,7 @@ hl-store/
 │   └── cart-ui.js      # Carrinho: botão da sacola, painel lateral, avisos
 ├── db/                 # schema.sql, seed.sql, first-admin.sql (Supabase)
 ├── admin/              # painel administrativo (login, produtos, promoções)
+├── docs/CUPONS.md      # Cupons: como ligar, regras comerciais, segurança, testes e limitações
 ├── docs/GUIA-CONFIGURACAO.md  # como ligar o painel + como tudo funciona (iniciante)
 ├── docs/ARQUITETURA-ADMIN.md  # decisões de arquitetura e escolha do banco
 ├── assets/images/      # Imagens (hoje: SVGs de demonstração)
@@ -47,6 +49,10 @@ Teste no celular usando o modo responsivo do navegador (larguras de 360 a 430 px
 - **Logo:** é um SVG embutido no `index.html` (hero: `logo-svg--hero`; rodapé: `logo-svg--footer`). Para trocar "STORE" por "STORIES", edite o texto de `class="logo-svg__name"` nos dois lugares. A logo original enviada está salva em `assets/images/logo-original.jpg` apenas como referência.
 - **Foto do hero (fundo):** no `index.html`, dentro de `<div class="hero__bg">`, troque `assets/images/hero.svg` pelo arquivo da sua foto (ex.: `assets/images/hero.jpg`, vertical, ~1080×1600 px).
 - **Fotos:** coloque os arquivos em `assets/images/` (proporção 4:5, ex.: 1200×1500 px, em WebP ou JPG otimizado) e atualize o campo `image`.
+
+## Cupons
+
+Cupons administráveis no painel (**Cupons**) e aplicados no carrinho; o banco valida e calcula. Rode `db/coupons.sql` no Supabase e leia **docs/CUPONS.md** (fluxo por WhatsApp, regras, segurança, testes e limitações).
 
 ## Carrinho
 

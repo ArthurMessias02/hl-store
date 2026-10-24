@@ -7,6 +7,7 @@
  *   #/                 início
  *   #/produtos         lista    #/produtos/novo    #/produtos/<id>   formulário
  *   #/promocoes        lista    #/promocoes/nova   #/promocoes/<id>  formulário
+ *   #/cupons           lista    #/cupons/novo      #/cupons/<id>     formulário    #/cupons/usos  pedidos com cupom
  *
  * Três coisas diferentes protegem o painel (não confunda):
  *  1) ESTA tela de login só pede e-mail e senha e entrega ao serviço de login (Supabase Auth).
@@ -113,7 +114,7 @@
 
   function setNav(path) {
     nav.hidden = false;
-    const section = path.indexOf("/produtos") === 0 ? "produtos" : path.indexOf("/promocoes") === 0 ? "promocoes" : "inicio";
+    const section = path.indexOf("/produtos") === 0 ? "produtos" : path.indexOf("/promocoes") === 0 ? "promocoes" : path.indexOf("/cupons") === 0 ? "cupons" : "inicio";
     nav.querySelectorAll("a").forEach(function (a) {
       const on = a.getAttribute("data-nav") === section;
       a.classList.toggle("is-on", on);
@@ -165,6 +166,11 @@
     if (seg[0] === "promocoes") {
       if (!seg[1]) return V.promoList(root);
       return V.promoForm(root, seg[1] === "nova" ? null : seg[1], r.query);
+    }
+    if (seg[0] === "cupons") {
+      if (!seg[1]) return A.coupons.listView(root);
+      if (seg[1] === "usos") return A.coupons.usageView(root, r.query.situacao);
+      return A.coupons.formView(root, seg[1] === "novo" ? null : seg[1]);
     }
     U.fill(root, h("p", { class: "state" }, "Página não encontrada."), h("a", { class: "btn btn--ghost", href: "#/" }, "Ir para o início"));
   }
